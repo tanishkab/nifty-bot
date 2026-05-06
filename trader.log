@@ -1,0 +1,151 @@
+2026-05-06 14:06:42,193 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:06:42,195 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:07:06,188 Login ho raha hai...
+2026-05-06 14:07:06,277 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:07:06,277 Login fail! Credentials check karo.
+2026-05-06 14:07:22,866 Credentials saved!
+2026-05-06 14:07:25,773 Test TG sent
+2026-05-06 14:07:28,942 Test TG sent
+2026-05-06 14:07:31,541 Login ho raha hai...
+2026-05-06 14:07:31,623 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:07:31,623 Login fail! Credentials check karo.
+2026-05-06 14:31:38,397 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:31:38,398 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:31:44,137 Logging into Angel One...
+2026-05-06 14:31:44,239 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:31:44,239 Login failed! Please check credentials.
+2026-05-06 14:31:45,856 Logging into Angel One...
+2026-05-06 14:31:45,946 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:31:45,946 Login failed! Please check credentials.
+2026-05-06 14:31:46,927 Logging into Angel One...
+2026-05-06 14:31:47,019 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:31:47,019 Login failed! Please check credentials.
+2026-05-06 14:32:31,772 Logging into Angel One...
+2026-05-06 14:32:31,870 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:32:31,871 Login failed! Please check credentials.
+2026-05-06 14:35:02,097 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:35:02,099 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:35:07,234 Logging into Angel One...
+2026-05-06 14:35:07,391 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:35:07,391 Login failed! Please check credentials.
+2026-05-06 14:36:07,272 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:36:07,274 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:36:09,036 Logging into Angel One...
+2026-05-06 14:36:09,127 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:36:09,128 Login failed! Please check credentials.
+2026-05-06 14:38:16,766 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:38:16,768 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:40:05,671 Logging into Angel One...
+2026-05-06 14:40:05,951 Angel One login OK
+2026-05-06 14:40:05,951 Login Successful!
+2026-05-06 14:40:05,952 Refreshing tokens from API...
+2026-05-06 14:40:05,952 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:40:05,952 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:40:05,952 Token refresh ho raha hai Angel API se...
+2026-05-06 14:40:05,952 Token refresh ho raha hai Angel API se...
+2026-05-06 14:40:16,751 Scrip master loaded: 171817 tokens
+2026-05-06 14:40:16,752 Scrip master loaded: 171817 tokens
+2026-05-06 14:40:16,906 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:40:16,907 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:40:16,907 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:40:16,907 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:40:16,907 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:40:16,908 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:40:16,908 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:40:16,908 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:40:16,908 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:40:16,909 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:40:16,924 Tokens updated successfully.
+2026-05-06 14:40:16,925 Telegram bot active.
+2026-05-06 14:40:16,932 Trading loop: NIFTY 50 | PAPER
+2026-05-06 14:40:18,198 Fetched 151 candles: NIFTY 50
+2026-05-06 14:40:18,355 Fetched 151 candles: NIFTY 50_FUT
+2026-05-06 14:40:18,398 Future volume used | vol_ok: 47/151
+2026-05-06 14:40:54,026 Trading stopped
+2026-05-06 14:40:58,295 Logging into Angel One...
+2026-05-06 14:40:58,565 Angel One login OK
+2026-05-06 14:40:58,566 Login Successful!
+2026-05-06 14:40:58,566 Refreshing tokens from API...
+2026-05-06 14:40:58,566 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:40:58,567 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:40:58,567 Token refresh ho raha hai Angel API se...
+2026-05-06 14:40:58,568 Token refresh ho raha hai Angel API se...
+2026-05-06 14:41:09,167 Scrip master loaded: 171817 tokens
+2026-05-06 14:41:09,169 Scrip master loaded: 171817 tokens
+2026-05-06 14:41:09,329 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:41:09,330 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:41:09,330 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:41:09,331 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:41:09,331 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:41:09,332 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:41:09,332 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:41:09,332 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:41:09,333 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:41:09,333 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:41:09,349 Tokens updated successfully.
+2026-05-06 14:41:09,352 Trading loop: NIFTY 50 | PAPER
+2026-05-06 14:41:10,254 Fetched 150 candles: NIFTY 50
+2026-05-06 14:41:10,390 Fetched 150 candles: NIFTY 50_FUT
+2026-05-06 14:41:10,392 Future volume used | vol_ok: 47/150
+2026-05-06 14:42:40,692 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:42:40,693 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:42:42,489 Logging into Angel One...
+2026-05-06 14:42:42,594 Login error: HTTPSConnectionPool(host='apiconnect.angelone.in', port=443): Max retries exceeded with url: /rest/auth/angelbroking/user/v1/loginByPassword (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1032)')))
+2026-05-06 14:42:42,595 Login failed! Please check credentials.
+2026-05-06 14:45:03,993 Ready! Symbol chuno -> Mode chuno -> START dabaao
+2026-05-06 14:45:03,994 Tokens auto-refresh honge (Future monthly, Option weekly)
+2026-05-06 14:45:05,495 Logging into Angel One...
+2026-05-06 14:45:05,838 Angel One login OK
+2026-05-06 14:45:05,839 Login Successful!
+2026-05-06 14:45:05,839 Refreshing tokens from API...
+2026-05-06 14:45:05,839 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:45:05,839 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:45:05,839 Token refresh ho raha hai Angel API se...
+2026-05-06 14:45:05,839 Token refresh ho raha hai Angel API se...
+2026-05-06 14:45:15,695 Scrip master loaded: 171817 tokens
+2026-05-06 14:45:15,696 Scrip master loaded: 171817 tokens
+2026-05-06 14:45:15,855 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:45:15,855 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:45:15,855 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:45:15,856 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:45:15,856 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:45:15,856 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:45:15,856 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:45:15,856 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:45:15,856 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:45:15,857 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:45:15,872 Tokens updated successfully.
+2026-05-06 14:45:15,873 Telegram bot active.
+2026-05-06 14:45:15,875 Trading loop: NIFTY 50 | PAPER
+2026-05-06 14:45:16,992 Fetched 151 candles: NIFTY 50
+2026-05-06 14:45:17,118 Fetch NIFTY 50_FUT: Couldn't parse the JSON response received from the server: b'Access denied because of exceeding access rate'
+2026-05-06 14:45:17,121 Volume filter disabled (index spot data, no volume)
+2026-05-06 14:48:44,461 Trading stopped
+2026-05-06 14:48:50,926 Logging into Angel One...
+2026-05-06 14:48:51,423 Angel One login OK
+2026-05-06 14:48:51,423 Login Successful!
+2026-05-06 14:48:51,424 Refreshing tokens from API...
+2026-05-06 14:48:51,424 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:48:51,425 Token refresh: 2026-05-06 (expiry: 2026-05-07)
+2026-05-06 14:48:51,425 Token refresh ho raha hai Angel API se...
+2026-05-06 14:48:51,426 Token refresh ho raha hai Angel API se...
+2026-05-06 14:49:01,352 Scrip master loaded: 171817 tokens
+2026-05-06 14:49:01,353 Scrip master loaded: 171817 tokens
+2026-05-06 14:49:01,504 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:49:01,505 Future token: NIFTY 50 -> NIFTY (66071)
+2026-05-06 14:49:01,505 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:49:01,506 Future token: FINNIFTY -> FINNIFTY (66069)
+2026-05-06 14:49:01,506 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:49:01,507 Future token: MIDCPNIFTY -> MIDCPNIFTY (66070)
+2026-05-06 14:49:01,507 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:49:01,508 Future token: BANKNIFTY -> BANKNIFTY (66068)
+2026-05-06 14:49:01,508 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:49:01,509 Option tokens: 424 (week expiry: 2026-05-07)
+2026-05-06 14:49:01,524 Tokens updated successfully.
+2026-05-06 14:49:01,536 Trading loop: NIFTY 50 | LIVE
+2026-05-06 14:49:02,414 Fetched 150 candles: NIFTY 50
+2026-05-06 14:49:02,576 Fetched 150 candles: NIFTY 50_FUT
+2026-05-06 14:49:02,581 Future volume used | vol_ok: 48/150
+2026-05-06 14:50:17,494 Fetched 151 candles: NIFTY 50
+2026-05-06 14:50:17,633 Fetched 151 candles: NIFTY 50_FUT
+2026-05-06 14:50:17,634 Future volume used | vol_ok: 49/151
