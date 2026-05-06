@@ -7,3 +7,6 @@ gtts
 pyttsx3
 smartapi-python
 urllib3
+streamlit
+plotly
+openpyxl
