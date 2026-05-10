@@ -83,22 +83,34 @@ CFG = {}  # Will be synced with session_state
 def angel_login():
     try:
         totp = pyotp.TOTP(st.session_state.config["TOTP"]).now()
+        logger.info(f"🔐 Attempting login with TOTP: {totp}")
+
         s = SmartConnect(api_key=st.session_state.config["API_KEY"])
         d = s.generateSession(st.session_state.config["CLIENT_ID"],
                              st.session_state.config["PASSWORD"], totp)
-        if d["status"]:
+
+        if d and d.get("status"):
             ST.api = s
-            logger.info("Angel One login OK")
+            logger.info("✅ Angel One login successful!")
+            logger.info(f"   API object set: {ST.api is not None}")
             return True
+        else:
+            logger.error(f"❌ Login failed: {d.get('message', 'Unknown error')}")
+            return False
     except Exception as e:
-        logger.error(f"Login error: {e}")
+        logger.error(f"❌ Login error: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
     return False
 
 def get_weekly_expiry():
+    """Get next weekly expiry for NIFTY (Tuesdays)"""
     today = datetime.date.today()
-    d = (3 - today.weekday()) % 7
+    # NIFTY weekly options expire on Tuesdays (weekday = 1)
+    d = (1 - today.weekday()) % 7
     exp = today + datetime.timedelta(days=d)
     if d == 0:
+        # If today is Tuesday, check if market has closed
         now = datetime.datetime.now()
         if now.hour >= 15 and now.minute >= 30:
             exp += datetime.timedelta(days=7)
@@ -111,11 +123,17 @@ def refresh_tokens(log_fn=None, force=False):
         logger.info(msg)
         if log_fn: log_fn(msg, "info")
 
-    _log("🔄 Refreshing option tokens...")
+    _log("🔄 Refreshing option tokens from Angel API...")
     try:
         url = "https://margincalculator.angelbroking.com/OpenAPI_File/files/OpenAPIScripMaster.json"
         resp = requests.get(url, timeout=60, verify=False)
+
+        if resp.status_code != 200:
+            _log(f"❌ Failed to fetch token master: {resp.status_code}")
+            return False
+
         items = resp.json()
+        _log(f"📥 Downloaded {len(items)} total instruments")
 
         today = datetime.date.today()
         week_exp = get_weekly_expiry()
@@ -123,21 +141,32 @@ def refresh_tokens(log_fn=None, force=False):
 
         for item in items:
             if not isinstance(item, dict): continue
+
+            # Check for NIFTY options
             item_name = str(item.get("name", "")).upper()
             if item_name != "NIFTY": continue
+
+            # Check instrument type
+            exch = str(item.get("exch_seg", "")).upper()
+            itype = str(item.get("instrumenttype", "")).upper()
+            if exch != "NFO" or itype != "OPTIDX": continue
 
             sym_field = str(item.get("symbol", "")).upper()
             if sym_field.endswith("CE"): opt_type = "CE"
             elif sym_field.endswith("PE"): opt_type = "PE"
             else: continue
 
+            # Parse expiry
             exp_str = str(item.get("expiry", ""))
             try:
                 exp = datetime.datetime.strptime(exp_str[:10], "%d%b%Y").date()
             except: continue
 
-            if (exp - today).days > 14: continue
+            # Only near expiry (21 days to include next 2-3 weeks)
+            days_to_exp = (exp - today).days
+            if days_to_exp < 0 or days_to_exp > 21: continue
 
+            # Parse strike
             try:
                 strike_val = int(float(item.get("strike", 0)) / 100)
             except: continue
@@ -145,57 +174,117 @@ def refresh_tokens(log_fn=None, force=False):
             if not (18000 <= strike_val <= 30000): continue
 
             token = str(item.get("token", ""))
-            opt_found[sym_field] = {"token": token, "symbol": sym_field}
+            opt_found[sym_field] = {
+                "token": token,
+                "symbol": sym_field,
+                "strike": strike_val,
+                "type": opt_type,
+                "expiry": exp
+            }
 
         ST.opt_tokens = opt_found
-        _log(f"✅ Loaded {len(opt_found)} option tokens")
+
+        # Show sample tokens loaded
+        sample_keys = list(opt_found.keys())[:5]
+        _log(f"✅ Loaded {len(opt_found)} option tokens (expiry: {week_exp})")
+        _log(f"📋 Sample: {', '.join(sample_keys)}")
+
         return True
     except Exception as e:
+        _log(f"❌ Token refresh error: {e}")
         logger.error(f"Token refresh error: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
         return False
 
 def get_option_token(symbol, strike, opt_type):
     if not ST.opt_tokens:
+        logger.error("No tokens loaded")
         return None, None
 
-    for exp_offset in [0, 7, -7]:
+    # Try different expiries (current week, next week, week after)
+    for exp_offset in [0, 1, 7, 8, 14]:
         exp = get_weekly_expiry() + datetime.timedelta(days=exp_offset)
-        exp_str = exp.strftime("%d%b%Y")[:-2].upper()
 
-        for delta in [0, 50, -50, 100, -100, 150, -150]:
+        # Angel format: NIFTY + DDMMMYY + 5-DIGIT-STRIKE + TYPE
+        # Example: NIFTY07MAY2624000PE
+        exp_str = exp.strftime("%d%b%y").upper()  # 07MAY26 (2-digit year)
+
+        for delta in [0, 50, -50, 100, -100, 150, -150, 200, -200]:
             s = int(strike) + delta
-            key = f"NIFTY{exp_str}{s}{opt_type}"
+
+            # Format: NIFTY + DDMMMYY + 5-digit strike + TYPE
+            key = f"NIFTY{exp_str}{s:05d}{opt_type}"
+
             if key in ST.opt_tokens:
                 d = ST.opt_tokens[key]
+                logger.debug(f"   ✅ Found: {key}")
                 return d["token"], d["symbol"]
 
+    logger.debug(f"   ❌ Not found. Tried strikes around {strike} for expiries near {get_weekly_expiry()}")
     return None, None
 
-def get_option_ltp_live(symbol, spot, opt_type):
-    """REAL premium from Angel API - NO CALCULATIONS!"""
+def get_option_ltp_live(symbol, spot, opt_type, use_calculated=False):
+    """REAL premium from Angel API - with fallback to calculated premium"""
     try:
         info = INSTRUMENTS.get(symbol, {})
         sg = info.get("sg", 50)
         strike = round(spot / sg) * sg
 
+        # For backtests or when tokens unavailable, use calculated premium
+        if use_calculated or not ST.api or not ST.opt_tokens:
+            # Simple premium calculation based on ATM distance
+            distance = abs(strike - spot) / spot
+
+            if opt_type == "CE":
+                # CE: cheaper when strike > spot
+                if strike > spot:
+                    premium = spot * (0.01 - distance * 0.5)
+                else:
+                    premium = spot * (0.02 + distance * 0.3)
+            else:  # PE
+                # PE: cheaper when strike < spot
+                if strike < spot:
+                    premium = spot * (0.01 - distance * 0.5)
+                else:
+                    premium = spot * (0.02 + distance * 0.3)
+
+            premium = max(premium, spot * 0.002)  # Minimum 0.2% of spot
+            logger.debug(f"📊 Calculated premium: {symbol} {opt_type} @ {strike} = Rs.{premium:.2f}")
+            return round(premium, 2)
+
+        logger.debug(f"🔍 Looking for {symbol} {opt_type} @ strike {strike} (spot: {spot})")
+
         for strike_delta in [0, sg, -sg, 2*sg, -2*sg]:
             try_strike = strike + strike_delta
             token, opt_sym = get_option_token(symbol, try_strike, opt_type)
 
-            if token and opt_sym and ST.api:
+            if token and opt_sym:
                 try:
+                    logger.debug(f"   Trying: {opt_sym} (token: {token})")
                     r = ST.api.ltpData("NFO", opt_sym, token)
                     if isinstance(r, dict) and r.get("status"):
                         ltp = float(r.get("data", {}).get("ltp", 0))
                         if ltp > 0:
                             logger.info(f"✅ REAL LTP: {opt_sym} = Rs.{ltp}")
                             return ltp
-                except:
+                    else:
+                        logger.debug(f"   Failed: {r}")
+                except Exception as e:
+                    logger.debug(f"   Error: {e}")
                     continue
 
-        logger.warning(f"⚠️ Could not fetch real LTP")
-        return round(spot * 0.005, 2)
-    except:
+        # Fallback to calculated if real fetch fails
+        logger.warning(f"⚠️ Could not fetch real LTP for {symbol} {opt_type} @ {strike}. Using calculated premium.")
+        distance = abs(strike - spot) / spot
+        if opt_type == "CE":
+            premium = spot * (0.015 if strike <= spot else 0.008)
+        else:
+            premium = spot * (0.015 if strike >= spot else 0.008)
+        return round(premium, 2)
+
+    except Exception as e:
+        logger.error(f"❌ LTP function error: {e}")
         return round(spot * 0.005, 2)
 
 def fetch_candles(token, exchange, interval, days):
@@ -252,9 +341,10 @@ def run_backtest(symbol, days, log_fn, config):
 
     for ts, row in df.iterrows():
         if pos:
-            # REAL PREMIUM
-            cur_opt = get_option_ltp_live(symbol, row["close"], pos["otype"])
-            time.sleep(0.1)
+            # Use calculated premium for backtesting (historical data)
+            cur_opt = get_option_ltp_live(symbol, row["close"], pos["otype"], use_calculated=True)
+            # No sleep needed for calculated premiums
+            # time.sleep(0.1)
 
             best = pos.get("best_opt", pos["opt_entry"])
             if cur_opt > best: best = cur_opt
@@ -280,20 +370,20 @@ def run_backtest(symbol, days, log_fn, config):
         if not pos:
             if row["ce_sig"]:
                 strike = round(row["close"] / sg) * sg
-                # REAL PREMIUM
-                opt_price = get_option_ltp_live(symbol, row["close"], "CE")
-                time.sleep(0.1)
+                # Use calculated premium for backtesting
+                opt_price = get_option_ltp_live(symbol, row["close"], "CE", use_calculated=True)
+                # No sleep needed for calculated premiums
                 pos = {"entry_time": str(ts), "otype": "CE", "strike": strike,
                       "spot_entry": row["close"], "opt_entry": opt_price, "best_opt": opt_price}
-                log_fn(f"  📈 CE @ Rs.{opt_price:.2f} (REAL)", "info")
+                log_fn(f"  📈 CE @ Rs.{opt_price:.2f} (Calculated)", "info")
             elif row["pe_sig"]:
                 strike = round(row["close"] / sg) * sg
-                # REAL PREMIUM
-                opt_price = get_option_ltp_live(symbol, row["close"], "PE")
-                time.sleep(0.1)
+                # Use calculated premium for backtesting
+                opt_price = get_option_ltp_live(symbol, row["close"], "PE", use_calculated=True)
+                # No sleep needed for calculated premiums
                 pos = {"entry_time": str(ts), "otype": "PE", "strike": strike,
                       "spot_entry": row["close"], "opt_entry": opt_price, "best_opt": opt_price}
-                log_fn(f"  📉 PE @ Rs.{opt_price:.2f} (REAL)", "info")
+                log_fn(f"  📉 PE @ Rs.{opt_price:.2f} (Calculated)", "info")
 
     log_fn(f"✅ Complete: {len(trades)} trades", "sig")
     return trades
