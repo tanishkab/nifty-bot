@@ -366,17 +366,13 @@ class UPRERAScraperAgent:
         return matching_agents
 
     def scrape_from_detail_page(self, agent_number):
-        """Scrape all agent information from the currently open detail page"""
+        """Scrape agent information from the currently open detail page"""
         agent_data = {
             'Agent_Number': agent_number,
             'Name': 'N/A',
             'Phone': 'N/A',
-            'District': 'N/A',
-            'Registration_No': 'N/A',
-            'Registration_Date': 'N/A',
-            'Valid_Upto': 'N/A',
             'Email': 'N/A',
-            'Address': 'N/A'
+            'District': 'N/A'
         }
 
         try:
@@ -384,8 +380,6 @@ class UPRERAScraperAgent:
 
             # Extract all data from table in modal
             tds = self.driver.find_elements(By.TAG_NAME, "td")
-
-            print(f"  🔍 DEBUG: Found {len(tds)} td elements")
 
             for i, td in enumerate(tds):
                 td_text = td.text.strip().lower()
@@ -396,35 +390,14 @@ class UPRERAScraperAgent:
                     agent_data['Name'] = next_td_text
                     print(f"  🔍 Found Name: {next_td_text}")
 
-                # Extract Registration Number
-                elif "registration no" in td_text or "registration number" in td_text:
-                    agent_data['Registration_No'] = next_td_text
-                    print(f"  🔍 Found Registration No: {next_td_text}")
-
-                # Extract Registration Date
-                elif "registration date" in td_text or "date of registration" in td_text:
-                    agent_data['Registration_Date'] = next_td_text
-                    print(f"  🔍 Found Registration Date: {next_td_text}")
-
-                # Extract Valid Upto
-                elif "valid upto" in td_text or "validity" in td_text:
-                    agent_data['Valid_Upto'] = next_td_text
-                    print(f"  🔍 Found Valid Upto: {next_td_text}")
-
-                # Extract District - with more patterns
+                # Extract District
                 elif any(keyword in td_text for keyword in ["district", "city", "location", "region"]):
                     if next_td_text and agent_data['District'] == 'N/A':
                         agent_data['District'] = next_td_text
-                        print(f"  🔍 Found District (matched '{td_text}'): {next_td_text}")
-
-                # Extract Address
-                elif "address" in td_text:
-                    agent_data['Address'] = next_td_text
-                    print(f"  🔍 Found Address: {next_td_text[:50]}...")
+                        print(f"  🔍 Found District: {next_td_text}")
 
             # If district still not found, try to extract from page text
             if agent_data['District'] == 'N/A':
-                print(f"  ⚠️  District not found in table, trying page text...")
                 district_patterns = [
                     r'District[\s:]+([A-Za-z\s]+?)(?:\n|$|Registration|Phone|Email|Address)',
                     r'City[\s:]+([A-Za-z\s]+?)(?:\n|$|Registration|Phone|Email|Address)',
@@ -433,7 +406,6 @@ class UPRERAScraperAgent:
                     district_match = re.search(pattern, page_text, re.IGNORECASE)
                     if district_match:
                         agent_data['District'] = district_match.group(1).strip()
-                        print(f"  🔍 Found District from page text: {agent_data['District']}")
                         break
 
             # Extract phone number
@@ -454,7 +426,7 @@ class UPRERAScraperAgent:
                 agent_data['Email'] = email_match.group(0)
 
             print(f"  📝 Agent {agent_number}: {agent_data['Name']}")
-            print(f"  📍 District: {agent_data['District']} | 📞 Phone: {agent_data['Phone']} | 📧 Email: {agent_data['Email']}")
+            print(f"  📍 District: {agent_data['District']} | 📞 {agent_data['Phone']} | 📧 {agent_data['Email']}")
 
         except Exception as e:
             print(f"  ⚠️  Error scraping agent {agent_number}: {e}")
@@ -524,12 +496,8 @@ class UPRERAScraperAgent:
                         'Agent_Number': idx,
                         'Name': 'N/A',
                         'Phone': 'N/A',
-                        'District': district_name,
-                        'Registration_No': 'N/A',
-                        'Registration_Date': 'N/A',
-                        'Valid_Upto': 'N/A',
                         'Email': 'N/A',
-                        'Address': 'N/A'
+                        'District': district_name
                     })
                     continue
 
@@ -572,12 +540,8 @@ class UPRERAScraperAgent:
                         'Agent_Number': idx,
                         'Name': 'SKIPPED_MODAL',
                         'Phone': 'N/A',
-                        'District': district_name,
-                        'Registration_No': 'N/A',
-                        'Registration_Date': 'N/A',
-                        'Valid_Upto': 'N/A',
                         'Email': 'N/A',
-                        'Address': 'N/A'
+                        'District': district_name
                     })
 
                     print(f"  ⏭️  Agent {idx} skipped")
@@ -596,12 +560,8 @@ class UPRERAScraperAgent:
                     'Agent_Number': idx,
                     'Name': 'ERROR',
                     'Phone': 'N/A',
-                    'District': district_name,
-                    'Registration_No': 'N/A',
-                    'Registration_Date': 'N/A',
-                    'Valid_Upto': 'N/A',
                     'Email': 'N/A',
-                    'Address': 'N/A'
+                    'District': district_name
                 })
 
                 # Try to recover - go back to agents list
@@ -702,25 +662,22 @@ class UPRERAScraperAgent:
             table_data = []
 
             # Add header row
-            headers = ['#', 'Name', 'Phone', 'District', 'Registration No', 'Reg. Date', 'Valid Upto', 'Email']
+            headers = ['#', 'Name', 'Phone', 'Email', 'District']
             table_data.append(headers)
 
             # Add data rows
             for agent in data:
                 row = [
                     str(agent['Agent_Number']),
-                    agent['Name'][:25] + '...' if len(agent['Name']) > 25 else agent['Name'],
+                    agent['Name'][:30] + '...' if len(agent['Name']) > 30 else agent['Name'],
                     agent['Phone'],
-                    agent['District'][:15] + '...' if len(agent['District']) > 15 else agent['District'],
-                    agent['Registration_No'],
-                    agent['Registration_Date'],
-                    agent['Valid_Upto'],
-                    agent['Email'][:25] + '...' if len(agent['Email']) > 25 else agent['Email']
+                    agent['Email'][:30] + '...' if len(agent['Email']) > 30 else agent['Email'],
+                    agent['District'][:20] + '...' if len(agent['District']) > 20 else agent['District']
                 ]
                 table_data.append(row)
 
             # Create table
-            col_widths = [0.4*inch, 1.3*inch, 1*inch, 0.9*inch, 1*inch, 0.8*inch, 0.8*inch, 1.3*inch]
+            col_widths = [0.5*inch, 2.2*inch, 1.3*inch, 2.2*inch, 1.5*inch]
             table = Table(table_data, colWidths=col_widths, repeatRows=1)
 
             # Style the table
