@@ -21,6 +21,7 @@ import sys
 import time
 import pandas as pd
 import re
+import os
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -35,6 +36,9 @@ from reportlab.lib.units import inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, PageBreak
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
+
+# Import HTML generator
+from html_generator import HTMLReportGenerator
 
 class UPRERAScraperAgent:
     def __init__(self, headless=False):
@@ -58,6 +62,11 @@ class UPRERAScraperAgent:
         service = Service(ChromeDriverManager().install())
         self.driver = webdriver.Chrome(service=service, options=chrome_options)
         self.wait = WebDriverWait(self.driver, 20)
+
+        # Initialize live HTML tracking
+        self.csv_filename = None
+        self.html_filename = None
+        self.district_name = None
 
         print("✅ Browser initialized successfully!")
 
@@ -473,10 +482,46 @@ class UPRERAScraperAgent:
             print(f"  ⚠️  Error finding button for row {row_index}: {e}")
             return None
 
+    def update_live_html(self, all_agents_data):
+        """Update CSV and HTML file with current scraped data"""
+        try:
+            if not all_agents_data:
+                return
+
+            # Save to CSV
+            df = pd.DataFrame(all_agents_data)
+            df.to_csv(self.csv_filename, index=False, encoding='utf-8-sig')
+
+            # Generate HTML using html_generator
+            html_gen = HTMLReportGenerator(self.csv_filename)
+            html_gen.generate_html(self.html_filename)
+
+        except Exception as e:
+            print(f"  ⚠️  Error updating HTML: {e}")
+
     def scrape_agents_by_row_indices(self, row_indices, district_name):
         """Scrape agents based on their row indices in the table"""
         print(f"\n🔄 Starting to scrape {len(row_indices)} agents from {district_name}...")
         print(f"⚡ Using optimized mode - fetching button for each agent individually")
+        print(f"🌐 Live HTML updates enabled - file will refresh after each agent")
+        print("=" * 70)
+
+        # Store district name for HTML generation
+        self.district_name = district_name
+
+        # Initialize CSV and HTML filenames
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        safe_district = district_name.replace(" ", "_").replace("/", "_")
+        self.csv_filename = f"scrapped data/rera_agents_{safe_district}_{timestamp}.csv"
+        self.html_filename = f"scrapped data/rera_agents_report_{timestamp}.html"
+
+        # Create scrapped data directory if it doesn't exist
+        os.makedirs("scrapped data", exist_ok=True)
+
+        # Print HTML file path
+        abs_html_path = os.path.abspath(self.html_filename)
+        print(f"\n🌐 Live HTML Dashboard: file://{abs_html_path}")
+        print(f"   Open this link in your browser to see real-time updates!")
         print("=" * 70)
 
         all_agents_data = []
@@ -542,6 +587,10 @@ class UPRERAScraperAgent:
 
                     print(f"  ✓ Agent {idx} complete")
 
+                    # Update HTML after each agent
+                    print(f"  🔄 Updating live HTML...")
+                    self.update_live_html(all_agents_data)
+
                 else:
                     # Modal or same page - skip this agent
                     print(f"  ⚠️  Detail modal/page opened - skipping this agent")
@@ -560,6 +609,10 @@ class UPRERAScraperAgent:
                     print(f"  ↩️  Navigating back to agents list...")
                     self.driver.get(agents_list_url)
                     time.sleep(1.5)
+
+                    # Update HTML after skipped agent
+                    print(f"  🔄 Updating live HTML...")
+                    self.update_live_html(all_agents_data)
 
             except Exception as e:
                 print(f"  ❌ Error with agent {idx} (row {row_index}): {e}")
@@ -590,6 +643,14 @@ class UPRERAScraperAgent:
                     time.sleep(1.5)
                 except Exception as recovery_error:
                     print(f"  ❌ Recovery failed: {recovery_error}")
+
+                # Update HTML after error
+                print(f"  🔄 Updating live HTML...")
+                self.update_live_html(all_agents_data)
+
+        # Final HTML update
+        print(f"\n🔄 Final HTML update...")
+        self.update_live_html(all_agents_data)
 
         return all_agents_data
 
